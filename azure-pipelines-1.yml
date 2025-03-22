@@ -39,10 +39,10 @@ steps:
 
 # Step 5: Display Employee Data File
 - script: |
-    if [ -f "$(EmployeeDataFile)" ]; then
-      echo "Contents of Employee Data File:"
-      cat "$(EmployeeDataFile)"
-    else
-      echo "File not found: $(EmployeeDataFile)"
-    fi
+    if exist "$(EmployeeDataFile)" (
+        echo Contents of Employee Data File:
+        type "$(EmployeeDataFile)"
+    ) else (
+        echo File not found: $(EmployeeDataFile)
+    )
   displayName: 'Display Employee Data File'
