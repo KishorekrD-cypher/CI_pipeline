@@ -1,21 +1,21 @@
 trigger:
   branches:
     include:
-      - main # Triggers pipeline 
+      - main
 
 pool:
-  vmImage: 'windows-latest' 
+  vmImage: 'windows-latest'
 
 variables:
-  BuildConfiguration: 'Release' # Build config (Debug or Release)
-  EmployeeDataFile: './Data/employees.json' # Path to employee_data.json file
+  BuildConfiguration: 'Release'
+  EmployeeDataFile: './Data/employees.json'
 
 steps:
 # Step 1: Cache NuGet Packages
 - task: Cache@2
   displayName: 'Cache NuGet Packages'
   inputs:
-    key: 'nuget | "$(Agent.OS)" | $(Build.SourcesDirectory)/EmployeeFunctionApp.sln'
+    key: 'nuget | "$(Agent.OS)" | EmployeeFunctionApp.sln'
     restoreKeys: |
       nuget | "$(Agent.OS)"
     path: $(NUGET_PACKAGES)
@@ -24,7 +24,7 @@ steps:
 - task: Cache@2
   displayName: 'Cache .NET SDK'
   inputs:
-    key: 'dotnet | "$(Agent.OS)" | $(Build.SourcesDirectory)/global.json'
+    key: 'dotnet | "$(Agent.OS)"'
     restoreKeys: |
       dotnet | "$(Agent.OS)"
     path: $(DOTNET_INSTALL_DIR)
@@ -33,7 +33,13 @@ steps:
 - task: Checkout@1
   displayName: 'Checkout GitHub Repository'
 
-# Step 4: Display Employee Data File
+# Step 4: Debug Variables (Optional for Troubleshooting)
+- script: |
+    echo "Build.SourcesDirectory = $(Build.SourcesDirectory)"
+    echo "EmployeeDataFile = $(EmployeeDataFile)"
+  displayName: 'Debug Variables'
+
+# Step 5: Display Employee Data File
 - script: |
     if [ -f "$(EmployeeDataFile)" ]; then
       echo "Contents of Employee Data File:"
@@ -43,17 +49,17 @@ steps:
     fi
   displayName: 'Display Employee Data File'
 
-# Step 5: Restore NuGet Packages (Only if Required)
+# Step 6: Restore NuGet Packages
 - script: |
     dotnet restore EmployeeFunctionApp.sln
   displayName: 'Restore NuGet Packages'
 
-# Step 6: Build Solution
+# Step 7: Build Solution
 - script: |
     dotnet build EmployeeFunctionApp.sln --configuration $(BuildConfiguration)
   displayName: 'Build Solution'
 
-# Step 7: Run Unit Tests
+# Step 8: Run Unit Tests
 - script: |
     dotnet test EmployeeFunctionApp.sln --configuration $(BuildConfiguration) --no-build
   displayName: 'Run Unit Tests'
