@@ -11,26 +11,17 @@ variables:
   EmployeeDataFile: './Data/employees.json' # Path to employees.json file
 
 steps:
-# Step 1: Cache NuGet Packages
-- task: Cache@2
-  displayName: 'Cache NuGet Packages'
-  inputs:
-    key: 'nuget | "$(Agent.OS)" | $(Build.SourcesDirectory)/nuget.config'
-    restoreKeys: |
-      nuget | "$(Agent.OS)"
-    path: $(NUGET_PACKAGES)
-
-# Step 2: Install NuGet (If Needed)
+# Step 1: Install NuGet Tool
 - task: NuGetToolInstaller@1
   displayName: 'Install NuGet Tool'
 
-# Step 3: Restore NuGet Packages
+# Step 2: Restore NuGet Packages
 - task: NuGetCommand@2
   displayName: 'Restore NuGet Packages'
   inputs:
     restoreSolution: '$(solution)'
 
-# Step 4: Build Solution
+# Step 3: Build Solution
 - task: VSBuild@1
   displayName: 'Build Solution'
   inputs:
@@ -39,18 +30,18 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
-# Step 5: Run Tests
+# Step 4: Run Unit Tests
 - task: VSTest@2
   displayName: 'Run Unit Tests'
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
-# Step 6: Read and Display Employee Data File
+# Step 5: Display Employee Data File
 - script: |
     if [ -f "$(EmployeeDataFile)" ]; then
       echo "Contents of Employee Data File:"
-      cat "$(EmployeeDataFile)" | jq
+      cat "$(EmployeeDataFile)"
     else
       echo "File not found: $(EmployeeDataFile)"
     fi
