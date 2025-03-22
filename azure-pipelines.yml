@@ -1,34 +1,59 @@
-# ASP.NET
-# Build and test ASP.NET projects.
-# Add steps that publish symbols, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
-
 trigger:
-- main
+  branches:
+    include:
+      - main # Triggers pipeline 
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'windows-latest' 
 
 variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
+  BuildConfiguration: 'Release' # Build config (Debug or Release)
+  EmployeeDataFile: './Data/employees.json' # Path to employee_data.json file
 
 steps:
-- task: NuGetToolInstaller@1
-
-- task: NuGetCommand@2
+# Step 1: Cache NuGet Packages
+- task: Cache@2
+  displayName: 'Cache NuGet Packages'
   inputs:
-    restoreSolution: '$(solution)'
+    key: 'nuget | "$(Agent.OS)" | $(Build.SourcesDirectory)/EmployeeFunctionApp.sln'
+    restoreKeys: |
+      nuget | "$(Agent.OS)"
+    path: $(NUGET_PACKAGES)
 
-- task: VSBuild@1
+# Step 2: Cache .NET SDK Installation
+- task: Cache@2
+  displayName: 'Cache .NET SDK'
   inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    key: 'dotnet | "$(Agent.OS)" | $(Build.SourcesDirectory)/global.json'
+    restoreKeys: |
+      dotnet | "$(Agent.OS)"
+    path: $(DOTNET_INSTALL_DIR)
 
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+# Step 3: Checkout Repository
+- task: Checkout@1
+  displayName: 'Checkout GitHub Repository'
+
+# Step 4: Display Employee Data File
+- script: |
+    if [ -f "$(EmployeeDataFile)" ]; then
+      echo "Contents of Employee Data File:"
+      cat "$(EmployeeDataFile)"
+    else
+      echo "File not found: $(EmployeeDataFile)"
+    fi
+  displayName: 'Display Employee Data File'
+
+# Step 5: Restore NuGet Packages (Only if Required)
+- script: |
+    dotnet restore EmployeeFunctionApp.sln
+  displayName: 'Restore NuGet Packages'
+
+# Step 6: Build Solution
+- script: |
+    dotnet build EmployeeFunctionApp.sln --configuration $(BuildConfiguration)
+  displayName: 'Build Solution'
+
+# Step 7: Run Unit Tests
+- script: |
+    dotnet test EmployeeFunctionApp.sln --configuration $(BuildConfiguration) --no-build
+  displayName: 'Run Unit Tests'
