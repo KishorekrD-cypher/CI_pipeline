@@ -39,12 +39,10 @@ steps:
 
 # Step 5: Display Employee Data File
 - script: |
-    echo "Checking file existence:"
-    if exist "./Data/employees.json" (
-        echo Contents of Employee Data File:
-        type "./Data/employees.json"
+    if exist "$(Build.SourcesDirectory)\Data\employees.json" (
+        echo "Contents of Employee Data File:"
+        type "$(Build.SourcesDirectory)\Data\employees.json"
     ) else (
-        echo "Error: File not found at ./Data/employees.json."
-        echo "Please verify the file path and repository contents."
+        echo "Error: File not found at $(Build.SourcesDirectory)\Data\employees.json."
     )
-  displayName: 'Display Employee Data File with Hardcoded Path'
+  displayName: 'Display Employee Data File from Local Source Directory'
