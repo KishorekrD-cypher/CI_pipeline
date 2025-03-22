@@ -1,0 +1,59 @@
+trigger:
+  branches:
+    include:
+      - main # Triggers pipeline 
+
+pool:
+  vmImage: 'windows-latest' 
+
+variables:
+  BuildConfiguration: 'Release' # Build config (Debug or Release)
+  EmployeeDataFile: './Data/employees.json' # Path to employee_data.json file
+
+steps:
+# Step 1: Cache NuGet Packages
+- task: Cache@2
+  displayName: 'Cache NuGet Packages'
+  inputs:
+    key: 'nuget | "$(Agent.OS)" | $(Build.SourcesDirectory)/EmployeeFunctionApp.sln'
+    restoreKeys: |
+      nuget | "$(Agent.OS)"
+    path: $(NUGET_PACKAGES)
+
+# Step 2: Cache .NET SDK Installation
+- task: Cache@2
+  displayName: 'Cache .NET SDK'
+  inputs:
+    key: 'dotnet | "$(Agent.OS)" | $(Build.SourcesDirectory)/global.json'
+    restoreKeys: |
+      dotnet | "$(Agent.OS)"
+    path: $(DOTNET_INSTALL_DIR)
+
+# Step 3: Checkout Repository
+- task: Checkout@1
+  displayName: 'Checkout GitHub Repository'
+
+# Step 4: Display Employee Data File
+- script: |
+    if [ -f "$(EmployeeDataFile)" ]; then
+      echo "Contents of Employee Data File:"
+      cat "$(EmployeeDataFile)"
+    else
+      echo "File not found: $(EmployeeDataFile)"
+    fi
+  displayName: 'Display Employee Data File'
+
+# Step 5: Restore NuGet Packages (Only if Required)
+- script: |
+    dotnet restore EmployeeFunctionApp.sln
+  displayName: 'Restore NuGet Packages'
+
+# Step 6: Build Solution
+- script: |
+    dotnet build EmployeeFunctionApp.sln --configuration $(BuildConfiguration)
+  displayName: 'Build Solution'
+
+# Step 7: Run Unit Tests
+- script: |
+    dotnet test EmployeeFunctionApp.sln --configuration $(BuildConfiguration) --no-build
+  displayName: 'Run Unit Tests'
