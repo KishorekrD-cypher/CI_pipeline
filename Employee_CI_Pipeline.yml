@@ -8,7 +8,7 @@ pool:
 
 variables:
   BuildConfiguration: 'Release' # Build config (Debug or Release)
-  EmployeeDataFile: './Data/employee_data.json' # Path to employee_data.json file
+  EmployeeDataFile: './Data/employees.json' # Path to employee_data.json file
 
 steps:
 # Step 1: Cache NuGet Packages
