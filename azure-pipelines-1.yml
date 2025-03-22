@@ -1,21 +1,21 @@
 trigger:
   branches:
     include:
-      - main
+      - main # Triggers the pipeline on changes to the main branch
 
 pool:
   vmImage: 'windows-latest'
 
 variables:
-  BuildConfiguration: 'Release'
-  EmployeeDataFile: './Data/employees.json'
+  BuildConfiguration: 'Release' # Build config (Debug or Release)
+  EmployeeDataFile: './Data/employees.json' # Path to employees.json file
 
 steps:
 # Step 1: Cache NuGet Packages
 - task: Cache@2
   displayName: 'Cache NuGet Packages'
   inputs:
-    key: 'nuget | "$(Agent.OS)" | EmployeeFunctionApp.sln'
+    key: 'nuget | "$(Agent.OS)"'
     restoreKeys: |
       nuget | "$(Agent.OS)"
     path: $(NUGET_PACKAGES)
@@ -33,13 +33,22 @@ steps:
 - task: Checkout@1
   displayName: 'Checkout GitHub Repository'
 
-# Step 4: Debug Variables (Optional for Troubleshooting)
+# Step 4: Debug Variables (Helps Identify Issues with Missing Keys)
 - script: |
     echo "Build.SourcesDirectory = $(Build.SourcesDirectory)"
     echo "EmployeeDataFile = $(EmployeeDataFile)"
+    echo "Agent.OS = $(Agent.OS)"
   displayName: 'Debug Variables'
 
-# Step 5: Display Employee Data File
+# Step 5: List Files in Repository
+- script: |
+    echo "Listing files in Build.SourcesDirectory:"
+    ls $(Build.SourcesDirectory)
+    echo "Listing files in the Data folder:"
+    ls ./Data
+  displayName: 'List Files in Repository and Data Folder'
+
+# Step 6: Display Employee Data File
 - script: |
     if [ -f "$(EmployeeDataFile)" ]; then
       echo "Contents of Employee Data File:"
@@ -49,17 +58,17 @@ steps:
     fi
   displayName: 'Display Employee Data File'
 
-# Step 6: Restore NuGet Packages
+# Step 7: Restore NuGet Packages
 - script: |
     dotnet restore EmployeeFunctionApp.sln
   displayName: 'Restore NuGet Packages'
 
-# Step 7: Build Solution
+# Step 8: Build Solution
 - script: |
     dotnet build EmployeeFunctionApp.sln --configuration $(BuildConfiguration)
   displayName: 'Build Solution'
 
-# Step 8: Run Unit Tests
+# Step 9: Run Unit Tests
 - script: |
     dotnet test EmployeeFunctionApp.sln --configuration $(BuildConfiguration) --no-build
   displayName: 'Run Unit Tests'
