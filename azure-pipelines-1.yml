@@ -39,10 +39,12 @@ steps:
 
 # Step 5: Display Employee Data File
 - script: |
-    if exist "$(EmployeeDataFile)" (
+    echo "Checking file existence:"
+    if exist "./Data/employees.json" (
         echo Contents of Employee Data File:
-        type "$(EmployeeDataFile)"
+        type "./Data/employees.json"
     ) else (
-        echo File not found: $(EmployeeDataFile)
+        echo "Error: File not found at ./Data/employees.json."
+        echo "Please verify the file path and repository contents."
     )
-  displayName: 'Display Employee Data File'
+  displayName: 'Display Employee Data File with Hardcoded Path'
