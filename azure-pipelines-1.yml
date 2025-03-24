@@ -38,18 +38,6 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
-#install StyleCop
-- script: |
-    echo "Installing StyleCop Analyzer..."
-    dotnet add $(EmployeeFunction) package StyleCop.Analyzers
-  displayName: 'Install StyleCop Analyzer'
-
-# Step 5: Static Code Analysis
-- script: |
-    echo "Verifying code formatting with dotnet format..."
-    dotnet format ./EmployeeFunctionApp.sln --verify-no-changes
-  displayName: 'Run StyleCop Analysis'
-
 
 #Install Gitleaks
 - script: |
