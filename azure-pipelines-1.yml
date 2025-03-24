@@ -37,13 +37,23 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
-# Step 5: Perform Dependency Vulnerability Scanning
+# Step 5: Static Code Analysis
+- script: |
+    dotnet format --check
+  displayName: 'Run StyleCop Analysis'
+
+# Step 6: Secret Detection
+- script: |
+    gitleaks detect --source=$(Build.SourcesDirectory)
+  displayName: 'Detect Exposed Secrets'
+
+# Step 7: Perform Dependency Vulnerability Scanning
 - script: |
     echo "Scanning for vulnerabilities in NuGet dependencies..."
     dotnet list package --vulnerable
   displayName: 'Vulnerability Scanning for Dependencies'
 
-# Step 6: Display Employee Data File
+# Step 8: Display Employee Data File
 - script: |
     if exist "$(Build.SourcesDirectory)\Data\employees.json" (
         echo "Contents of Employee Data File:"
