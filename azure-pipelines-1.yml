@@ -9,6 +9,7 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   EmployeeDataFile: './Data/employees.json' # Path to employees.json file
+  EmployeeFunction: './EmployeeFunctionApp'
 
 steps:
 # Step 1: Install NuGet Tool
@@ -37,10 +38,16 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
+#install StyleCop
+- script: |
+    echo "Installing StyleCop Analyzer..."
+    dotnet add $(EmployeeFunction)/EmployeeFunctionApp.csproj package StyleCop.Analyzers
+  displayName: 'Install StyleCop Analyzer'
+
 # Step 5: Static Code Analysis
-#- script: |
-#    dotnet format $(solution) 
-# displayName: 'Run StyleCop Analysis'
+- script: |
+    dotnet format $(solution) 
+  displayName: 'Run StyleCop Analysis'
 
 #Install Gitleaks
 - script: |
