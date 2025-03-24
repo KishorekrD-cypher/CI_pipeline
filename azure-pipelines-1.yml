@@ -46,7 +46,8 @@ steps:
 
 # Step 5: Static Code Analysis
 - script: |
-    dotnet format ./EmployeeFunctionApp.sln --check
+    echo "Verifying code formatting with dotnet format..."
+    dotnet format ./EmployeeFunctionApp.sln --verify-no-changes
   displayName: 'Run StyleCop Analysis'
 
 
