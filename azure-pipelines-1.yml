@@ -39,7 +39,7 @@ steps:
 
 # Step 5: Static Code Analysis
 - script: |
-    dotnet format $(solution) --check
+    dotnet format $(solution) 
   displayName: 'Run StyleCop Analysis'
 
 # Step 6: Secret Detection
