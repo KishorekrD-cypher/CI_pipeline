@@ -3,24 +3,35 @@
     "Id": "3",
     "Name": "Kishore Kumar R",
     "Department": "PDI",
-    "Role": "Analyst"
+    "Role": "Analyst",
+    "Location": null
   },
   {
     "Id": "2",
     "Name": "Kishore Kumar R",
     "Department": "PDI",
-    "Role": "Analyst"
+    "Role": "Analyst",
+    "Location": null
   },
   {
     "Id": "5",
     "Name": "Kishore Kumar R",
     "Department": "PLatform Development and Integration",
-    "Role": "Analyst"
+    "Role": "Analyst",
+    "Location": null
   },
   {
     "Id": "6",
     "Name": "Kishore Kumar R",
     "Department": "PLatform Development and Integration",
-    "Role": "Analyst"
+    "Role": "Analyst",
+    "Location": null
+  },
+  {
+    "Id": "7",
+    "Name": "Kishore Kumar R",
+    "Department": "PLatform Development and Integration",
+    "Role": "Analyst",
+    "Location": "Coimbatore"
   }
 ]

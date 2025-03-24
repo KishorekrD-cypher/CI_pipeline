@@ -66,3 +66,10 @@ steps:
     )
   displayName: 'Display Employee Data File from Local Source Directory'
 
+#Step 8: Publish build Artifact
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Build Artifact for EmployeeFunctionApp'
+  inputs:
+    PathtoPublish: '$(build.artifactStagingDirectory)' 
+    ArtifactName: 'EmployeeFunctionApp'               
+    publishLocation: 'Container'                      

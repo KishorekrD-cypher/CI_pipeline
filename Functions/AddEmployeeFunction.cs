@@ -14,7 +14,7 @@ namespace EmployeeFunctionApp.Functions
 
         public AddEmployeeFunction(IEmployeeService employeeService)
         {
-            _employeeService = employeeService;
+            _employeeService = employeeService;//DI
         }
 
         [Function("AddEmployee")]

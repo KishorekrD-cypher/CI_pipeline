@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 
 namespace EmployeeFunctionApp.Services
 {
-    public interface IEmployeeService
+    public interface IEmployeeService//A,P
     {
         Task<Employee> GetEmployeeByIdAsync(string id);
         Task AddEmployeeAsync(Employee employee);
     }
 }
+

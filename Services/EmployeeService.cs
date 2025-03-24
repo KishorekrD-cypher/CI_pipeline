@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace EmployeeFunctionApp.Services
 {
-    public class EmployeeService : IEmployeeService
+    public class EmployeeService : IEmployeeService //I,E
     {
         private static readonly string FilePath = Environment.GetEnvironmentVariable("EmployeeDataPath")
                               ?? Path.Combine(Directory.GetCurrentDirectory(), "Data", "employees.json");
@@ -25,7 +25,7 @@ namespace EmployeeFunctionApp.Services
         {
             var employees = await ReadEmployeesAsync();
 
-            if (employees.Any(e => e.Id == employee.Id)) //check if employee already exists
+            if (employees.Any(e => e.Id == employee.Id)) //check if employee already exist
             {
                 Console.WriteLine("Employee already exists!");
                 return;
