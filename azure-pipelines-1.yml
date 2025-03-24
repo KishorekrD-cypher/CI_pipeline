@@ -42,6 +42,12 @@ steps:
 #    dotnet format $(solution) 
 # displayName: 'Run StyleCop Analysis'
 
+#Install Gitleaks
+- script: |
+    echo "Installing Gitleaks..."
+    choco install gitleaks -y
+  displayName: 'Install Gitleaks'
+
 # Step 5: Secret Detection
 - script: |
     gitleaks detect --source=$(Build.SourcesDirectory)
