@@ -46,8 +46,9 @@ steps:
 
 # Step 5: Static Code Analysis
 - script: |
-    dotnet format $(solution) 
+    dotnet format ./EmployeeFunctionApp.sln --check
   displayName: 'Run StyleCop Analysis'
+
 
 #Install Gitleaks
 - script: |
